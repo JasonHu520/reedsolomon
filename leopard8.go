@@ -134,7 +134,7 @@ func (r *leopardFF8) Encode(shards [][]byte) error {
 func (r *leopardFF8) encode(shards [][]byte) error {
 	shardSize := shardSize(shards)
 	if shardSize%64 != 0 {
-		return ErrInvalidShardSize
+		return ErrShardSize
 	}
 
 	m := ceilPow2(r.parityShards)
@@ -380,6 +380,14 @@ func (r *leopardFF8) ReconstructData(shards [][]byte) error {
 	return r.reconstruct(shards, false)
 }
 
+func (r *leopardFF8) GetSurvivalShards(badIndex []int, azLayout [][]int) ([]int, []int, error) {
+	return nil, nil, ErrNotSupported
+}
+
+func (r *leopardFF8) PartialReconstruct(shards [][]byte, survivalIdx, badIdx []int) error {
+	return ErrNotSupported
+}
+
 func (r *leopardFF8) Verify(shards [][]byte) (bool, error) {
 	if len(shards) != r.totalShards {
 		return false, ErrTooFewShards
@@ -442,7 +450,7 @@ func (r *leopardFF8) reconstruct(shards [][]byte, recoverAll bool) error {
 
 	shardSize := shardSize(shards)
 	if shardSize%64 != 0 {
-		return ErrInvalidShardSize
+		return ErrShardSize
 	}
 
 	// Use only if we are missing less than 1/4 parity,
